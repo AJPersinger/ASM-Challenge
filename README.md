@@ -1,18 +1,50 @@
-# ASM-Challenge
+README
 
-The Iron Dragons are attending the ASM-GT hackathon at Georgia Tech. This time, the Iron Dragons are represented by David Freiberg, Christine Palmer, and me, Axel-Jose Muñoz.
+Folders:
+	Al 6061 - Original Images
+		This folder contains the unmodified optical micrographs obtained for different heat treatment levels.
+		Each heat treatment is represented by five magnification levels (5x, 10x, 20x, 50x, and 100x).
+	Al 6061 - Filtered Images
+		This folder contains the optical micrographs after ImageJ thresholding to become a binary image.
+		The ImageJ macro used to create these from the originals is available as OpticalParticles.ijm.
+	Al 6061 - Particle Informat
+		This folder contains the CSV files listening the properties for every measured particle.
+		Properties include particle area, x-y coordinates, ellipse fit paramaters, and particle orientation.
+		The ImageJ macro used to record these properties is available as OpticalParticles.ijm.
 
-The hackathon is branded as a community event where we can make contacts in industry and academia. I hope they don’t mind being crushed in the hackathon and still giving me a job.
+ImageJ Macros:
+	OpticalParticles.ijm
+		This macro is used to apply a binary threshold to optical micrographs and record particle data into CSV files.
+	OpticalFFT.ijm
+		This macro is used to apply a Fast Fourier Transform to optical micrographs.
+		The Fast Fourier Transform can be used to measure particle alignment, as developed by Ayres et al. [1].
+		The alignment profiles are plotted using OvalProfile.java.
+	OvalProfile.java
+		This macro takes an image and creates a profile of the sum of the pixel values along each ray.
+		This creates a graph of the components of the Fourier Transform along each degree of rotation.
+			The peaks of the graph at 0 and 180 represent the vertical component of the average fiber alignment.
+			The peaks at 90 and 270 represent the horizontal component of the average fiber alignment.
+		This macro was created by Bill O'Connell, and is available as a public macro in the ImageJ macro repositories. [2]
 
-The ASM-GT challenge is based on data science. So they’ll give us a bunch of data that seems worthless to humans, but using (a lot of) math and programming, we can extrapolate data and trends that can predict future situations.
 
-(04/08/16 10:15) We arrived to the Pettit Microtechnology Building after two hours of looking for parking and the actual building. We were the first people to arrive to the challenge even though we drove just under 900 miles to get here.
+Mathematica Code:
+	Code Workflow:
+		Imports the CSV data from the folder "Al 6061 - Particle Information" into the array opticalParticleTable.
+		Creates a list of heat treatment temperature predictions for particles from 1 square pixel to 50 square pixels by:
+			Taking the log of the number of particles of the aforementioned size in each image, and 
+			Creating a linear interpolation from the log of the counts for 400 and 600 degrees F, and
+			Fitting the log of the number of particles of the aforementioned size in the unknown sample into the linear interpolation, and
+			Outputting the heat treatment temperature predicted by the interpolation.
+		Plots the list.
 
-(04/08/16 10:15) The problem was described via a presentation. It’s unlke other hackathons I’ve been to (namely one, MRS). The problem is that we have to find out what heat treatment was used on our sample of Al 6061, based on similar data on other heat treatments. We are given SEM, Optical, EBSD, and TEM data for temperature ranges 400, 650, 750 degrees. We can “buy” data on the sample for virtual money or even ask “consultants” (graduate students at Georgia Tech) for help on data science.
+Thermodynamics:
+	Phase transition data and TTT plot taken from Ambriz et al. [3]
+	Nucleation rate equations taken from MIT's OpenCourseWare online biochemistry lectures. [4]
+		
 
- 
-
-Plan of attack: Since I don’t have adequate materials science background (especially in the acronyms), I’ll be tackling the data science aspect. In the end we’re trying to create a multi-dimensional regression scheme (linear or using maybe spline functions),  using TEM, EBSD, etc. as parameters for the axis.
-
-I’ll be using plot digitizers to analyze the plots for the free samples and try to extract the data. From there we can build a plot, fit a scheme to it, and look at the least-squares to see if it’s anything worth pursuing. Christine will be looking at the materials aspect to see all the variables and parameters that might be useful. David will be using ImageJ to analyze the optical and microscopes images to find emergent properties.
-
+Bibliography:
+	[1] Ayres, Chantal E., B. Shekhar Jha, Hannah Meredith, James R. Bowman, Gary L. Bowlin, Scott C. Henderson, and David G. Simpson. "Measuring Fiber Alignment in Electrospun Scaffolds: A User's Guide to the 2D Fast Fourier Transform Approach." Journal of Biomaterials Science, Polymer Edition 19.5 (2008): 603-21.
+		http://www.ncbi.nlm.nih.gov/pubmed/18419940
+	[2] http://rsb.info.nih.gov/ij/plugins/oval-profile.html
+	[3] Ambriz, Ricardo Rafael, and David Jaramillo. "Mechanical Behavior of Precipitation Hardened Aluminum Alloys Welds." Light Metal Alloys Applications (2014): n. pag. Web. http://cdn.intechopen.com/pdfs-wm/46826.pdf
+	[4] "Review of Chemical Thermodynamics", Massachusetts Institute of Technology. Biochemistry. Fall 2001. http://ocw.mit.edu/courses/biology/7-51-graduate-biochemistry-fall-2001/lecture-notes/fa01lec06.pdf
